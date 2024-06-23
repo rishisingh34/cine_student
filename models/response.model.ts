@@ -1,22 +1,22 @@
-import mongoose, { Document, Schema, Model } from 'mongoose';
+import mongoose, { Document, Schema, Model , Types} from 'mongoose';
 
 interface IResponse extends Document {
   quesId: number;
   response: number;
-  userId: string;
+  userId: Types.ObjectId;
   ansId: number;
 }
 
 const responseSchema: Schema<IResponse> = new Schema({
   quesId: { type: Number, required: true },
   response: { type: Number, required: true },
-  userId: { type: String, required: true },
+  userId: { type: Schema.Types.ObjectId, ref:'Student',required: true },
   ansId: { type: Number, required: true },
 });
 
-const Response: Model<IResponse> = mongoose.model<IResponse>('Response', responseSchema);
+const ResponseModel: Model<IResponse> = mongoose.model<IResponse>('Response', responseSchema);
 
-export default Response;
+export default ResponseModel;
 
 // question id { 1 - 50 or 60 } denotes the exact question and its category no need for category
 // response { 1 - 3 }, 1 - attempted , 2 - attempted and marked for review , 3 - not attempted
