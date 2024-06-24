@@ -6,5 +6,6 @@ import auth from '../middleware/auth.middleware'
 
 router.post('/login',authController.login);
 router.post('/response',auth,testController.response);
+router.post('/preferences',auth,testController.preferences);
 
 export default router;
