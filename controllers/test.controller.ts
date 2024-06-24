@@ -1,6 +1,7 @@
 import ResponseModel from "../models/response.model";
 import StudentModel from "../models/student.model";
 import { Request, Response, response } from 'express';
+import ActivityModel from "../models/activity.model";
 
 interface AuthenticatedRequest extends Request {
     userId?: string;
@@ -20,6 +21,24 @@ const testController={
             const responseReceived=new ResponseModel({quesId,response,userId,ansId});
             await responseReceived.save();
             return res.status(200).json({message:"Response recorded"});
+        }
+        catch(error)
+        {
+            return res.status(500).json({message:"Internal server error"});
+        }
+    },
+    preferences: async(req:AuthenticatedRequest,res:Response):Promise<Response>=>{
+        try{
+            const {preference}=req.body;
+            const userId=req.userId;
+            const existingActivity=await ActivityModel.findOne({userId});
+            if(existingActivity)
+            {
+                return res.status(400).json({message:"Preference already set"});
+            }
+            const activity=new ActivityModel({userId,preference,firstLogin:Date.now()});
+            await activity.save();
+            return res.status(200).json({message:"Preference set"});
         }
         catch(error)
         {
