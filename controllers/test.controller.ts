@@ -59,7 +59,7 @@ const testController={
             let questions : any  = cache.get(cacheKey);
 
             if (!questions) {
-                questions = await Question.find({ subject });
+                questions = await Question.find({ subject }).lean();
                 questions = questions.sort(() => Math.random() - 0.5);
                 cache.set(cacheKey, questions);
             }
