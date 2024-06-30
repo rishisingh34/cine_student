@@ -69,6 +69,26 @@ const testController={
             return res.status(500).json({message:"Internal server error"});
         }
     },
+    getPreference :  async(req:AuthenticatedRequest,res:Response):Promise<Response>=>{
+        try{
+
+            const userId = req.userId ; 
+            const activity = await ActivityModel.findOne({userId}).select({preference:1, _id:0}); 
+            switch (activity?.preference) {
+                case 4:
+                    return res.status(200).json({ language: "C++" });
+                case 5:
+                    return res.status(200).json({ language: "Python" });
+                case 6:
+                    return res.status(200).json({ language: "Java" });
+                default:
+                    return res.status(400).json({ message: "Invalid preference number" });
+            }
+        }
+        catch(error) {
+            return res.status(500).json({message:"Internal server error"});
+        }
+    },
 }
 
 export default testController;

@@ -8,5 +8,6 @@ router.post('/login',authController.login);
 router.post('/response',auth,testController.response);
 router.post('/preferences',auth,testController.preferences);
 router.get('/questions', auth , testController.getQuestions);
+router.get('/getPreference', auth , testController.getPreference); 
 
 export default router;
