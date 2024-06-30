@@ -17,8 +17,3 @@ const responseSchema: Schema<IResponse> = new Schema({
 const ResponseModel: Model<IResponse> = mongoose.model<IResponse>('Response', responseSchema);
 
 export default ResponseModel;
-
-// question id { 1 - 50 or 60 } denotes the exact question and its category no need for category
-// response { 1 - 3 }, 1 - attempted , 2 - attempted and marked for review , 3 - not attempted
-// userId denotes mongoose object id of the user
-// ansId { 1 - 4 } denotes the ans given by the user

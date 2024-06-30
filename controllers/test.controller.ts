@@ -2,7 +2,10 @@ import ResponseModel from "../models/response.model";
 import StudentModel from "../models/student.model";
 import { Request, Response, response } from 'express';
 import ActivityModel from "../models/activity.model";
+import Question from "../models/question.model";
+import NodeCache from "node-cache"; 
 
+const cache = new NodeCache({ stdTTL: 60 * 60 * 3 });
 interface AuthenticatedRequest extends Request {
     userId?: string;
 }
@@ -44,7 +47,28 @@ const testController={
         {
             return res.status(500).json({message:"Internal server error"});
         }
-    }
+    },
+    getQuestions : async(req:AuthenticatedRequest,res:Response):Promise<Response>=>{
+        try{
+            const userId = req.userId;
+            const { subject } = req.query;            
+            if (!subject) {
+                return res.status(400).json({ message: "Subject is required" });
+            }
+            const cacheKey = `${userId}_${subject}`;
+            let questions : any  = cache.get(cacheKey);
+
+            if (!questions) {
+                questions = await Question.find({ subject });
+                questions = questions.sort(() => Math.random() - 0.5);
+                cache.set(cacheKey, questions);
+            }
+            return res.status(200).json(questions);
+        }
+        catch(error) {
+            return res.status(500).json({message:"Internal server error"});
+        }
+    },
 }
 
 export default testController;
