@@ -75,6 +75,8 @@ const testController={
             const userId = req.userId ; 
             const activity = await ActivityModel.findOne({userId}).select({preference:1, _id:0}); 
             switch (activity?.preference) {
+                case 3:
+                    return res.status(200).json({ language: "C" });
                 case 4:
                     return res.status(200).json({ language: "C++" });
                 case 5:

@@ -4,14 +4,14 @@ interface IActivity extends Document {
     userId: Types.ObjectId;
     preference: number;
     firstLogin: Date;
-    quesArray : Number[]
+    quesArray : Types.ObjectId[]
 }
 
 const activitySchema: Schema<IActivity> = new Schema({
     userId: { type: Schema.Types.ObjectId, ref: 'Student', required: true },
     preference: { type: Number},
     firstLogin: { type: Date},
-    quesArray : [{type : Number }] 
+    quesArray : [{type : Schema.Types.ObjectId, ref: 'Question', required: true}] 
 });
 
 const Activity = model<IActivity>('Activity', activitySchema);
