@@ -11,10 +11,11 @@ interface IFeedbackResponse extends Document {
 const FeedbackResponseSchema = new Schema<IFeedbackResponse>({
     student: { type: Schema.Types.ObjectId, ref: 'Student', required: true },
     response : [{
+        _id : false , 
         question: { type: String, required: true },
         ans: { type: String, required: true }
     }]
-});
+}, {versionKey: false});
 
 const FeedbackResponseModel = model<IFeedbackResponse>('FeedbackResponse', FeedbackResponseSchema);
 

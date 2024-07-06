@@ -18,11 +18,9 @@ const feedbackController={
     },
     submitFeedback: async(req:AuthenticatedRequest,res:Response):Promise<Response>=>{
         try{
-            const {question,ans}=req.body;
-            const userId=req.userId;
             const feedbackResponse=new FeedbackResponseModel({
-                student:userId,
-                response:[{question,ans}]
+                student:req.userId,
+                response:req.body
             });
             await feedbackResponse.save();
             return res.status(200).json({message:"Feedback recorded"});
