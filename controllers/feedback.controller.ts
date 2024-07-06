@@ -9,7 +9,7 @@ interface AuthenticatedRequest extends Request {
 const feedbackController={
     feedbackQuestions: async( req:AuthenticatedRequest,res:Response):Promise<Response>=>{
         try{
-            const feedbackQuestions=await Feedback.find().select('question -_id');
+            const feedbackQuestions=await Feedback.find();
             return res.status(200).json({feedbackQuestions});
         }
         catch(error){
@@ -20,11 +20,6 @@ const feedbackController={
         try{
             const {question,ans}=req.body;
             const userId=req.userId;
-            const existingFeedback=await FeedbackResponseModel.findOne({student:userId});
-            if(existingFeedback)
-            {
-                return res.status(400).json({message:"Feedback already submitted"});
-            }
             const feedbackResponse=new FeedbackResponseModel({
                 student:userId,
                 response:[{question,ans}]

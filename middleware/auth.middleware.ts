@@ -6,28 +6,14 @@ interface AuthenticatedRequest extends Request {
   userId?: string;
 }
 
-const auth = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+const auth = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+  const token = req.cookies?.accessToken;
   try {
-    const token = req.cookies.accessToken;
-    if (!token) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
-
-    if (!ACCESS_TOKEN_SECRET) {
-      throw new Error("ACCESS_TOKEN_SECRET is not defined");
-    }
-
-    const decoded = jwt.verify(token, ACCESS_TOKEN_SECRET) as jwt.JwtPayload;
-
-    if (typeof decoded.aud !== 'string') {
-      throw new Error("Invalid token audience");
-    }
-
+    const decoded = jwt.verify(token, ACCESS_TOKEN_SECRET!) as jwt.JwtPayload & { aud: string };
     req.userId = decoded.aud;
     next();
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Internal Server Error" });
+    res.status(401).json({ message: "Unauthorized" });
   }
 };
 
