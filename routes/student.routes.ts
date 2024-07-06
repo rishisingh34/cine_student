@@ -12,5 +12,6 @@ router.get('/questions', auth , testController.getQuestions);
 router.get('/getPreference', auth , testController.getPreference); 
 router.get('/feedbackQuestions',auth,feedbackController.feedbackQuestions);
 router.post('/submitFeedback',auth,feedbackController.submitFeedback);
+router.get('/getResponses',auth,testController.getResponses);
 
 export default router;

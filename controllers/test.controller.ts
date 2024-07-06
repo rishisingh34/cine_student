@@ -91,6 +91,16 @@ const testController={
             return res.status(500).json({message:"Internal server error"});
         }
     },
+    getResponses : async(req:AuthenticatedRequest,res:Response):Promise<Response>=>{
+        try{
+            const userId = req.userId;
+            const responses = await ResponseModel.find({userId}).select('-_id -_userId -__v');
+            return res.status(200).json(responses);
+        }
+        catch(error) {
+            return res.status(500).json({message:"Internal server error"});
+        }
+    }
 }
 
 export default testController;
