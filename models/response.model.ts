@@ -12,7 +12,7 @@ const responseSchema: Schema<IResponse> = new Schema({
   response: { type: Number, required: true },
   userId: { type: Schema.Types.ObjectId, ref:'Student',required: true },
   ansId: { type: Number, required: true },
-});
+}, { versionKey : false });
 
 const ResponseModel: Model<IResponse> = mongoose.model<IResponse>('Response', responseSchema);
 

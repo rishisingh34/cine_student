@@ -12,7 +12,7 @@ const activitySchema: Schema<IActivity> = new Schema({
     preference: { type: Number},
     firstLogin: { type: Date},
     quesArray : [{type : Schema.Types.ObjectId, ref: 'Question', required: true}] 
-});
+}, { versionKey: false });
 
 const Activity = model<IActivity>('Activity', activitySchema);
 

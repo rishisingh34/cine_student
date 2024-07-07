@@ -22,7 +22,7 @@ const StudentSchema = new Schema<IStudent>({
     phone: { type: String, required: true },
     password: { type: String},
     isVerified: { type: Boolean, required: true, default: false }
-});
+}, { versionKey : false });
 
 const StudentModel = model<IStudent>('Student', StudentSchema);
 
