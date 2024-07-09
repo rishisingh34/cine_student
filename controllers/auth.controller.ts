@@ -8,10 +8,10 @@ const authController={
     login: async(req:Request,res:Response):Promise<Response>=>{
         try{
             const {studentNumber,password,token}=req.body;
-            const {data} = await axios.post(`https://www.google.com/recaptcha/api/siteverify?secret=${RECAPTCHA_SECRET_KEY}&response=${token}`);
-            if(!data.success || data.score < 0.5){
-                return res.status(400).json({error:"Invalid Captcha"});
-            }
+            // const {data} = await axios.post(`https://www.google.com/recaptcha/api/siteverify?secret=${RECAPTCHA_SECRET_KEY}&response=${token}`);
+            // if(!data.success || data.score < 0.5){
+            //     return res.status(400).json({error:"Invalid Captcha"});
+            // }
             const student=await StudentModel.findOne({studentNumber,password});
             if(!student)
             {
