@@ -7,7 +7,7 @@ interface AuthenticatedRequest extends Request {
 }
 
 const feedbackController={
-    feedbackQuestions: async( req:AuthenticatedRequest,res:Response):Promise<Response>=>{
+    feedbackQuestions: async( req:Request,res:Response):Promise<Response>=>{
         try{
             const feedbackQuestions=await Feedback.find();
             return res.status(200).json({feedbackQuestions});
@@ -16,16 +16,19 @@ const feedbackController={
             return res.status(500).json({message:"Internal server error"});
         }
     },
-    submitFeedback: async(req:AuthenticatedRequest,res:Response):Promise<Response>=>{
+    submitFeedback: async(req:Request,res:Response):Promise<Response>=>{
         try{
+            const { userId, response  } = req.body;             
             const feedbackResponse=new FeedbackResponseModel({
-                student:req.userId,
-                response:req.body
+                student:userId,
+                response: response 
             });
             await feedbackResponse.save();
             return res.status(200).json({message:"Feedback recorded"});
         }
         catch(error){
+            console.log(error);
+            
             return res.status(500).json({message:"Internal server error"});
         }
     }

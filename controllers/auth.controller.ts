@@ -17,13 +17,13 @@ const authController={
             {
                 return res.status(400).json({message:"Invalid credentials"});
             }
-            const accessToken=await Token.signAccessToken(student.id);
-            res.cookie("accessToken", accessToken, {
-                httpOnly: true,
-                secure: true,
-                sameSite: "none",
-            });
-            return res.status(200).json({message:"Login successful"});
+            // const accessToken=await Token.signAccessToken(student.id);
+            // res.cookie("accessToken", accessToken, {
+            //     httpOnly: true,
+            //     secure: true,
+            //     sameSite: "none",
+            // });
+            return res.status(200).json({message:"Login successful", userId : student.id  });
         }
         catch(error)
         {

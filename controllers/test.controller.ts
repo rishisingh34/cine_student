@@ -6,15 +6,11 @@ import Question from "../models/question.model";
 import NodeCache from "node-cache"; 
 
 const cache = new NodeCache({ stdTTL: 60 * 60 * 3 });
-interface AuthenticatedRequest extends Request {
-    userId?: string;
-}
 
 const testController={
-    response: async(req:AuthenticatedRequest,res:Response):Promise<Response>=>{
+    response: async(req:Request,res:Response):Promise<Response>=>{
         try{
-            const {quesId,response,ansId}=req.body;
-            const userId=req.userId;
+            const {userId , quesId,response,ansId}=req.body;
             const existingResponse=await ResponseModel.findOne({quesId,userId});
             if(existingResponse)
             {
@@ -30,10 +26,9 @@ const testController={
             return res.status(500).json({message:"Internal server error"});
         }
     },
-    preferences: async(req:AuthenticatedRequest,res:Response):Promise<Response>=>{
+    preferences: async(req:Request,res:Response):Promise<Response>=>{
         try{
-            const {preference}=req.body;
-            const userId=req.userId;
+            const {userId , preference}=req.body;
             const activity=new ActivityModel({userId,preference,firstLogin:Date.now()});
             await activity.save();
             return res.status(200).json({message:"Preference set"});
@@ -43,10 +38,9 @@ const testController={
             return res.status(500).json({message:"Internal server error"});
         }
     },
-    getQuestions : async(req:AuthenticatedRequest,res:Response):Promise<Response>=>{
+    getQuestions : async(req:Request,res:Response):Promise<Response>=>{
         try{
-            const userId = req.userId;
-            const { subject } = req.query;            
+            const { subject , userId } = req.query;            
             if (!subject) {
                 return res.status(400).json({ message: "Subject is required" });
             }
@@ -54,7 +48,7 @@ const testController={
             let questions : any  = cache.get(cacheKey);
 
             if (!questions) {
-                questions = await Question.find({ subject }).lean();
+                questions = await Question.find({ subject }).select('-answer').lean();
                 questions = questions.sort(() => Math.random() - 0.5);
                 cache.set(cacheKey, questions);
             }
@@ -64,10 +58,10 @@ const testController={
             return res.status(500).json({message:"Internal server error"});
         }
     },
-    getPreference :  async(req:AuthenticatedRequest,res:Response):Promise<Response>=>{
+    getPreference :  async(req:Request,res:Response):Promise<Response>=>{
         try{
 
-            const userId = req.userId ; 
+            const userId = req.query.userId as string; 
             const activity = await ActivityModel.findOne({userId}).select({preference:1, _id:0}); 
             switch (activity?.preference) {
                 case 3:
@@ -86,9 +80,9 @@ const testController={
             return res.status(500).json({message:"Internal server error"});
         }
     },
-    getResponses : async(req:AuthenticatedRequest,res:Response):Promise<Response>=>{
+    getResponses : async(req:Request,res:Response):Promise<Response>=>{
         try{
-            const userId = req.userId;
+            const userId = req.query.userId as string;
             const responses = await ResponseModel.find({userId}).select('-_id -_userId -__v');
             return res.status(200).json(responses);
         }
