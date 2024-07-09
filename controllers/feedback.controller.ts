@@ -2,10 +2,6 @@ import { Request,Response } from "express";
 import Feedback from "../models/feedback.model";
 import FeedbackResponseModel from "../models/feedbackResponse.model";
 
-interface AuthenticatedRequest extends Request {
-    userId?: string;
-}
-
 const feedbackController={
     feedbackQuestions: async( req:Request,res:Response):Promise<Response>=>{
         try{
