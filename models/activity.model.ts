@@ -3,14 +3,16 @@ import { Schema, model, Document, Types } from "mongoose";
 interface IActivity extends Document {
     userId: Types.ObjectId;
     preference: number;
-    firstLogin: Date;
+    lastLogin: Date;
+    timeSpent: number;
     lastResponse: Date
 }
 
 const activitySchema: Schema<IActivity> = new Schema({
     userId: { type: Schema.Types.ObjectId, ref: 'Student', required: true },
     preference: { type: Number},
-    firstLogin: { type: Date},
+    lastLogin: { type: Date},
+    timeSpent: { type: Number},
     lastResponse: { type: Date}
 }, { versionKey: false });
 

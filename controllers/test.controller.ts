@@ -30,7 +30,7 @@ const testController={
     preferences: async(req:Request,res:Response):Promise<Response>=>{
         try{
             const {userId , preference}=req.body;
-            const activity=new ActivityModel({userId,preference,firstLogin:Date.now(),lastResponse:Date.now()});
+            const activity=new ActivityModel({userId,preference,lastLogin:Date.now(),lastResponse:Date.now(),timeSpent:0});
             await activity.save();
             return res.status(200).json({message:"Preference set"});
         }
@@ -97,7 +97,9 @@ const testController={
             const activity = await ActivityModel.findOne({userId});
             const time = 3*60*60*1000;
             if (activity?.lastResponse) {
-                const timeElapsed = activity.lastResponse.getTime() - activity.firstLogin.getTime();
+                const timeElapsed = activity.timeSpent+activity.lastResponse.getTime() - activity.lastLogin.getTime();
+                activity.timeSpent = timeElapsed;
+                await activity.save();
                 return res.status(200).json({ remainingTime: time - timeElapsed });
             }
             return res.status(200).json({remainingTime: time});

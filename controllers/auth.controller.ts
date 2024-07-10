@@ -2,6 +2,7 @@ import StudentModel from "../models/student.model";
 import { Request, Response } from 'express';
 import axios from "axios";
 import {RECAPTCHA_SECRET_KEY} from '../config/env.config';
+import Activity from "../models/activity.model";
 // import Token from '../middleware/token.middleware';
 
 const authController={
@@ -17,6 +18,7 @@ const authController={
             {
                 return res.status(400).json({message:"Invalid credentials"});
             }
+            await Activity.findOneAndUpdate({userId:student.id},{lastLogin:Date.now()});
             // const accessToken=await Token.signAccessToken(student.id);
             // res.cookie("accessToken", accessToken, {
             //     httpOnly: true,
