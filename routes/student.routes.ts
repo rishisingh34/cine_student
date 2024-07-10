@@ -13,5 +13,6 @@ router.get('/getPreference', testController.getPreference);
 router.get('/feedbackQuestions',feedbackController.feedbackQuestions);
 router.post('/submitFeedback',feedbackController.submitFeedback);
 router.get('/getResponses',testController.getResponses);
+router.get('/timeRemaining',testController.getTime);
 
 export default router;

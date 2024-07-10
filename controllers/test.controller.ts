@@ -11,6 +11,7 @@ const testController={
     response: async(req:Request,res:Response):Promise<Response>=>{
         try{
             const {userId , quesId,response,ansId}=req.body;
+            await ActivityModel.findOneAndUpdate({userId},{lastResponse:Date.now()});
             const existingResponse=await ResponseModel.findOne({quesId,userId});
             if(existingResponse)
             {
@@ -29,7 +30,7 @@ const testController={
     preferences: async(req:Request,res:Response):Promise<Response>=>{
         try{
             const {userId , preference}=req.body;
-            const activity=new ActivityModel({userId,preference,firstLogin:Date.now()});
+            const activity=new ActivityModel({userId,preference,firstLogin:Date.now(),lastResponse:Date.now()});
             await activity.save();
             return res.status(200).json({message:"Preference set"});
         }
@@ -85,6 +86,21 @@ const testController={
             const userId = req.query.userId as string;
             const responses = await ResponseModel.find({userId}).select('-_id -_userId -__v');
             return res.status(200).json(responses);
+        }
+        catch(error) {
+            return res.status(500).json({message:"Internal server error"});
+        }
+    },
+    getTime: async(req:Request,res:Response):Promise<Response>=>{
+        try{
+            const userId = req.query.userId as string;
+            const activity = await ActivityModel.findOne({userId});
+            const time = 3*60*60*1000;
+            if (activity?.lastResponse) {
+                const timeElapsed = activity.lastResponse.getTime() - activity.firstLogin.getTime();
+                return res.status(200).json({ remainingTime: time - timeElapsed });
+            }
+            return res.status(200).json({remainingTime: time});
         }
         catch(error) {
             return res.status(500).json({message:"Internal server error"});
