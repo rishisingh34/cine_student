@@ -4,16 +4,14 @@ interface IActivity extends Document {
     userId: Types.ObjectId;
     preference: number;
     lastLogin: Date;
-    timeSpent: number;
-    lastResponse: Date
+    timeSpent: number
 }
 
 const activitySchema: Schema<IActivity> = new Schema({
     userId: { type: Schema.Types.ObjectId, ref: 'Student', required: true },
     preference: { type: Number},
     lastLogin: { type: Date},
-    timeSpent: { type: Number},
-    lastResponse: { type: Date}
+    timeSpent: { type: Number}
 }, { versionKey: false });
 
 const Activity = model<IActivity>('Activity', activitySchema);

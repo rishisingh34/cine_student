@@ -11,7 +11,12 @@ const testController={
     response: async(req:Request,res:Response):Promise<Response>=>{
         try{
             const {userId , quesId,response,ansId}=req.body;
-            await ActivityModel.findOneAndUpdate({userId},{lastResponse:Date.now()});
+            const activity=await ActivityModel.findOne({userId});
+            if(activity)
+            {
+                activity.timeSpent=activity.timeSpent+Date.now()-activity.lastLogin.getTime();
+                await activity.save();
+            }
             const existingResponse=await ResponseModel.findOne({quesId,userId});
             if(existingResponse)
             {
@@ -30,7 +35,7 @@ const testController={
     preferences: async(req:Request,res:Response):Promise<Response>=>{
         try{
             const {userId , preference}=req.body;
-            const activity=new ActivityModel({userId,preference,lastLogin:Date.now(),lastResponse:Date.now(),timeSpent:0});
+            const activity=new ActivityModel({userId,preference,lastLogin:Date.now(),timeSpent:0});
             await activity.save();
             return res.status(200).json({message:"Preference set"});
         }
@@ -96,11 +101,8 @@ const testController={
             const userId = req.query.userId as string;
             const activity = await ActivityModel.findOne({userId});
             const time = 3*60*60*1000;
-            if (activity?.lastResponse) {
-                const timeElapsed = activity.timeSpent+activity.lastResponse.getTime() - activity.lastLogin.getTime();
-                activity.timeSpent = timeElapsed;
-                await activity.save();
-                return res.status(200).json({ remainingTime: time - timeElapsed });
+            if (activity?.timeSpent) {
+                return res.status(200).json({ remainingTime: time - activity.timeSpent });
             }
             return res.status(200).json({remainingTime: time});
         }
