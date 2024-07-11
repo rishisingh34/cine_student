@@ -18,7 +18,7 @@ const authController={
             {
                 return res.status(400).json({message:"Invalid credentials"});
             }
-            await Activity.findOneAndUpdate({userId:student.id},{lastLogin:Date.now()});
+            await Activity.findOneAndUpdate({userId:student.id},{lastActivity:Date.now()});
             // const accessToken=await Token.signAccessToken(student.id);
             // res.cookie("accessToken", accessToken, {
             //     httpOnly: true,

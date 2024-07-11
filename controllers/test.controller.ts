@@ -14,7 +14,8 @@ const testController={
             const activity=await ActivityModel.findOne({userId});
             if(activity)
             {
-                activity.timeSpent=activity.timeSpent+Date.now()-activity.lastLogin.getTime();
+                activity.timeSpent=activity.timeSpent+Date.now()-activity.lastActivity;
+                activity.lastActivity=Date.now();
                 await activity.save();
             }
             const existingResponse=await ResponseModel.findOne({quesId,userId});
@@ -35,7 +36,7 @@ const testController={
     preferences: async(req:Request,res:Response):Promise<Response>=>{
         try{
             const {userId , preference}=req.body;
-            const activity=new ActivityModel({userId,preference,lastLogin:Date.now(),timeSpent:0});
+            const activity=new ActivityModel({userId,preference,lastActivity:Date.now(),timeSpent:0});
             await activity.save();
             return res.status(200).json({message:"Preference set"});
         }
