@@ -6,9 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const cors_1 = __importDefault(require("cors"));
 const corsOptions = {
     origin: [
-        // "http://localhost:3000",
-        // "https://cineportal2024.netlify.app/"
-        "*"
+        "https://cineportal2024.netlify.app"
     ],
     credentials: true,
     optionsSuccessStatus: 200,
