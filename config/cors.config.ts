@@ -2,8 +2,9 @@ import cors from "cors";
 
 const corsOptions = {
   origin: [
-    "http://localhost:3000",
-    "https://cineportal2024.netlify.app/"
+    // "http://localhost:3000",
+    // "https://cineportal2024.netlify.app/"
+    "*"
   ],
   credentials: true,
   optionsSuccessStatus: 200,
