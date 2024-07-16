@@ -26,7 +26,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
 const responseSchema = new mongoose_1.Schema({
     quesId: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Question', required: true },
-    response: { type: Number, required: true },
+    status: { type: Number, required: true },
     userId: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Student', required: true },
     ansId: { type: Number, required: true },
 }, { versionKey: false });
