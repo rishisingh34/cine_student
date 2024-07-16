@@ -20,7 +20,7 @@ const cache = new node_cache_1.default({ stdTTL: 60 * 60 * 3 });
 const testController = {
     response: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         try {
-            const { userId, quesId, response, ansId } = req.body;
+            const { userId, quesId, status, ansId } = req.body;
             const activity = yield activity_model_1.default.findOne({ userId });
             if (activity) {
                 activity.timeSpent = activity.timeSpent + Date.now() - activity.lastActivity;
@@ -29,14 +29,15 @@ const testController = {
             }
             const existingResponse = yield response_model_1.default.findOne({ quesId, userId });
             if (existingResponse) {
-                yield response_model_1.default.findOneAndUpdate({ quesId, userId }, { response, ansId });
+                yield response_model_1.default.findOneAndUpdate({ quesId, userId }, { status, ansId });
                 return res.status(200).json({ message: "Response updated" });
             }
-            const responseReceived = new response_model_1.default({ quesId, response, userId, ansId });
+            const responseReceived = new response_model_1.default({ quesId, status, userId, ansId });
             yield responseReceived.save();
             return res.status(200).json({ message: "Response recorded" });
         }
         catch (error) {
+            console.log(error);
             return res.status(500).json({ message: "Internal server error" });
         }
     }),

@@ -10,7 +10,7 @@ const cache = new NodeCache({ stdTTL: 60 * 60 * 3 });
 const testController={
     response: async(req:Request,res:Response):Promise<Response>=>{
         try{
-            const {userId , quesId,response,ansId}=req.body;
+            const {userId , quesId,status ,ansId}=req.body;
             const activity=await ActivityModel.findOne({userId});
             if(activity)
             {
@@ -21,15 +21,17 @@ const testController={
             const existingResponse=await ResponseModel.findOne({quesId,userId});
             if(existingResponse)
             {
-                await ResponseModel.findOneAndUpdate({quesId,userId},{response,ansId});
+                await ResponseModel.findOneAndUpdate({quesId,userId},{status ,ansId});
                 return res.status(200).json({message:"Response updated"});
             }
-            const responseReceived=new ResponseModel({quesId,response,userId,ansId});
+            const responseReceived=new ResponseModel({quesId,status ,userId,ansId});
             await responseReceived.save();
             return res.status(200).json({message:"Response recorded"});
         }
         catch(error)
         {
+            console.log(error);
+            
             return res.status(500).json({message:"Internal server error"});
         }
     },
