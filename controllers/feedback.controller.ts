@@ -15,6 +15,10 @@ const feedbackController={
     submitFeedback: async(req:Request,res:Response):Promise<Response>=>{
         try{
             const { userId, response  } = req.body;             
+            if(!response)
+            {
+                return res.status(400).json({message:"Response is required"});
+            }
             const feedbackResponse=new FeedbackResponseModel({
                 student:userId,
                 response: response 

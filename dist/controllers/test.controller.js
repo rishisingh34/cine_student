@@ -44,6 +44,10 @@ const testController = {
     preferences: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         try {
             const { userId, preference } = req.body;
+            const existingActivity = yield activity_model_1.default.findOne({ userId });
+            if (existingActivity) {
+                return res.status(400).json({ message: "Preference already set" });
+            }
             const activity = new activity_model_1.default({ userId, preference, lastActivity: Date.now(), timeSpent: 0 });
             yield activity.save();
             return res.status(200).json({ message: "Preference set" });

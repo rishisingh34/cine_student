@@ -38,6 +38,11 @@ const testController={
     preferences: async(req:Request,res:Response):Promise<Response>=>{
         try{
             const {userId , preference}=req.body;
+            const existingActivity=await ActivityModel.findOne({userId});
+            if(existingActivity)
+            {
+                return res.status(400).json({message:"Preference already set"});
+            }
             const activity=new ActivityModel({userId,preference,lastActivity:Date.now(),timeSpent:0});
             await activity.save();
             return res.status(200).json({message:"Preference set"});
