@@ -62,9 +62,14 @@ const testController={
             let questions : any  = cache.get(cacheKey);
 
             if (!questions) {
+                const activity = await ActivityModel.findOne({ userId });
+                if(activity?.questions.subject) {
+                    return res.status(200).json(activity.questions.subject);
+                }
                 questions = await Question.find({ subject }).select('-answer').lean();
                 questions = questions.sort(() => Math.random() - 0.5);
                 cache.set(cacheKey, questions);
+                await ActivityModel.findOneAndUpdate({ userId }, { [`questions.${subject}`]: questions });
             }
             return res.status(200).json(questions);
         }

@@ -65,9 +65,14 @@ const testController = {
             const cacheKey = `${userId}_${subject}`;
             let questions = cache.get(cacheKey);
             if (!questions) {
+                const activity = yield activity_model_1.default.findOne({ userId });
+                if (activity === null || activity === void 0 ? void 0 : activity.questions.subject) {
+                    return res.status(200).json(activity.questions.subject);
+                }
                 questions = yield question_model_1.default.find({ subject }).select('-answer').lean();
                 questions = questions.sort(() => Math.random() - 0.5);
                 cache.set(cacheKey, questions);
+                yield activity_model_1.default.findOneAndUpdate({ userId }, { [`questions.${subject}`]: questions });
             }
             return res.status(200).json(questions);
         }
