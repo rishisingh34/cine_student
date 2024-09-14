@@ -7,6 +7,7 @@ const cors_1 = __importDefault(require("cors"));
 const corsOptions = {
     origin: [
         "https://cineportal2024.netlify.app",
+        "https://cine2024.netlify.app",
         "http://localhost:3000",
     ],
     credentials: true,
