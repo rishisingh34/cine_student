@@ -61,7 +61,7 @@ const testController = {
                 return res.status(200).json({ 
                     language : language, 
                     questions : cachedQuestions, 
-                    responses : responses 
+                    responses : responses || []
                 });
             }
             if(activity && Object.keys(activity.questions).length > 0) {
@@ -97,7 +97,7 @@ const testController = {
             return res.status(200).json({
                 language,
                 questions: flatQuestions,
-                responses : responses 
+                responses : responses || []
             });
         } catch(err) {
             console.log(err);
