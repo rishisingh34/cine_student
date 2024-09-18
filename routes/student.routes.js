@@ -7,11 +7,8 @@ const feedbackController = require('../controllers/feedback.controller');
 router.post('/login',authController.login);
 router.post('/response',testController.response);
 router.post('/preferences',testController.preferences);
-router.get('/questions', testController.getQuestions);
-router.get('/getPreference', testController.getPreference); 
+router.get('/questions', testController.getQuestions); 
 router.get('/feedbackQuestions',feedbackController.feedbackQuestions);
 router.post('/submitFeedback',feedbackController.submitFeedback);
-router.get('/getResponses',testController.getResponses);
-router.get('/timeRemaining',testController.getTime);
 
 module.exports = router;
