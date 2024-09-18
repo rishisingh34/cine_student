@@ -10,5 +10,6 @@ router.post('/preferences',testController.preferences);
 router.get('/questions', testController.getQuestions); 
 router.get('/feedbackQuestions',feedbackController.feedbackQuestions);
 router.post('/submitFeedback',feedbackController.submitFeedback);
+router.post('/submitTest', testController.submitTest); 
 
 module.exports = router;
