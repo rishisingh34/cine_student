@@ -108,7 +108,10 @@ const testController = {
         try {
             const userId = req.query.userId ;
             const activity = await Activity.findOne({userId}).select({preference : 1, _id : 0});
-            const language = getLanguage(activity.preference); 
+            if(!activity){
+                return res.status(400).json({ message : "Invalid preference number"});
+            }
+            const language = getLanguage(activity.preference);
             if(language === "Invalid preference number"){
                 return res.status(400).json({ message: "Invalid preference number" });
             } 
