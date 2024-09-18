@@ -56,7 +56,10 @@ const testController = {
                 Activity.findOne({ userId }),
                 Response.find({ userId }).select('-_id -userId -__v')
             ]);
-            const language = getLanguage(activity.preference);
+            let language = ""; 
+            if(activity && activity.preference) {
+                language = getLanguage(activity.preference);
+            }
             if(cachedQuestions) { 
                 return res.status(200).json({ 
                     language : language, 
