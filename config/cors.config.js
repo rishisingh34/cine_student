@@ -1,10 +1,11 @@
-import cors from "cors";
+const cors = require("cors"); 
 
 const corsOptions = {
   origin: [
     "https://cineportal2024.netlify.app",
     "https://cine2024.netlify.app",
-    "http://localhost:3000",  
+    "http://localhost:3000",
+    "https://cinetest24.netlify.app"  
   ],
   credentials: true,
   optionsSuccessStatus: 200,
@@ -12,4 +13,4 @@ const corsOptions = {
 
 const handleCors = cors(corsOptions);
 
-export default handleCors;
+module.exports = handleCors; 

@@ -1,7 +1,7 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const mongoose_1 = require("mongoose");
-const StudentSchema = new mongoose_1.Schema({
+const mongoose = require('mongoose');
+const { Schema, model } = mongoose;
+
+const StudentSchema = new Schema({
     name: { type: String, required: true },
     studentNumber: { type: String, required: true },
     branch: { type: String, required: true },
@@ -12,5 +12,7 @@ const StudentSchema = new mongoose_1.Schema({
     password: { type: String },
     isVerified: { type: Boolean, required: true, default: false }
 }, { versionKey: false });
-const StudentModel = (0, mongoose_1.model)('Student', StudentSchema);
-exports.default = StudentModel;
+
+const StudentModel = model('Student', StudentSchema);
+
+module.exports = StudentModel;

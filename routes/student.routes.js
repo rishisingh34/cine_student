@@ -1,9 +1,8 @@
-import { Router } from "express";
-const router = Router();
-import authController from '../controllers/auth.controller'
-import testController  from '../controllers/test.controller'
-import feedbackController from '../controllers/feedback.controller'
-// import auth from '../middleware/auth.middleware'
+const { Router } = require('express');
+const router = Router(); 
+const authController = require('../controllers/auth.controller');
+const testController = require('../controllers/test.controller');
+const feedbackController = require('../controllers/feedback.controller');
 
 router.post('/login',authController.login);
 router.post('/response',testController.response);
@@ -15,4 +14,4 @@ router.post('/submitFeedback',feedbackController.submitFeedback);
 router.get('/getResponses',testController.getResponses);
 router.get('/timeRemaining',testController.getTime);
 
-export default router;
+module.exports = router;
