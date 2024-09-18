@@ -36,8 +36,8 @@ const testController = {
     preferences : async (req, res)=> {
         try {
             const { userId , preference } = req.body;
-            const existingAcitvity = await Activity.findOne({userId});
-            if(existingAcitvity) {
+            const existingActivity = await Activity.findOne({userId});
+            if(existingActivity && existingActivity.preference) {   
                 return res.status(400).json({ message: "Preference already set" });
             }
             const activity = new Activity({userId, preference, lastActivity: Date.now(), timeSpent: 0 });
@@ -104,44 +104,6 @@ const testController = {
             });
         } catch(err) {
             console.log(err);
-            return res.status(500).json({ message: "Internal Server Error" });
-        }
-    },
-    getPreference : async (req, res) => {
-        try {
-            const userId = req.query.userId ;
-            const activity = await Activity.findOne({userId}).select({preference : 1, _id : 0});
-            if(!activity){
-                return res.status(400).json({ message : "Invalid preference number"});
-            }
-            const language = getLanguage(activity.preference);
-            if(language === "Invalid preference number"){
-                return res.status(400).json({ message: "Invalid preference number" });
-            } 
-            return res.status(200).json({ language : language });
-        } catch (err) {
-            return res.status(500).json({ message: "Internal Server Error" });
-        }
-    },
-    getResponses : async (req, res) => {
-        try {
-            const userId = req.query.userId ;
-            const responses = await Response.find({userId}).select('-_id -userId -__v');
-            return res.status(200).json(responses);
-        } catch(err) {
-            return res.status(500).json({ message: "Internal Server Error" });
-        }
-    },
-    getTime : async (req, res) => {
-        try {
-            const userId = req.query.userId ;
-            const activity = await Activity.findOne({userId}); 
-            const time = 1*60*60*1000; 
-            if(activity && activity.timeSpent) {
-                return res.status(200).json({ remainingTime: time - activity.timeSpent });
-            }
-            return res.status(200).json({ remainingTime: time });
-        } catch (err) {
             return res.status(500).json({ message: "Internal Server Error" });
         }
     },

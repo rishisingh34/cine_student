@@ -23,7 +23,7 @@ const authController = {
             if (activity && activity.preference !== undefined) {
                 language = getLanguage(activity.preference);
             } 
-            await Activity.findOneAndUpdate({ userId: student.id }, { lastActivity: Date.now() }, { upsert: true });
+            await Activity.findOneAndUpdate({ userId: student.id }, { lastActivity: Date.now()});
             return res.status(200).json({
                 message : "Login successful",
                 userId: student.id,
