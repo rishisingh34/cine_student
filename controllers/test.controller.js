@@ -52,18 +52,23 @@ const testController = {
             const { userId } = req.query; 
             const cacheKey = userId; 
             let cachedQuestions = cache.get(cacheKey);
-            const activity = await Activity.findOne({userId});
+            const [activity, responses] = await Promise.all([
+                Activity.findOne({ userId }),
+                Response.find({ userId }).select('-_id -userId -__v')
+            ]);
             const language = getLanguage(activity.preference);
             if(cachedQuestions) { 
                 return res.status(200).json({ 
                     language : language, 
-                    questions : cachedQuestions 
+                    questions : cachedQuestions, 
+                    responses : responses 
                 });
             }
             if(activity && Object.keys(activity.questions).length > 0) {
                 return res.status(200).json({
                     language : language ,
-                    questions : activity.questions
+                    questions : activity.questions,
+                    responses : responses 
                 })
             }
             const allQuestions = await Question.find({
@@ -91,9 +96,11 @@ const testController = {
             );    
             return res.status(200).json({
                 language,
-                questions: flatQuestions
+                questions: flatQuestions,
+                responses : responses 
             });
         } catch(err) {
+            console.log(err);
             return res.status(500).json({ message: "Internal Server Error" });
         }
     },
