@@ -88,7 +88,7 @@ const testController = {
             let flatQuestions = [];
             for (const subject of subjectsOrder) {
                 const subjectQuestions = organizedQuestions[subject] || [];
-                const randomizedQuestions = subjectQuestions.sort(() => Math.random() - 0.5);
+                const randomizedQuestions = subjectQuestions.sort(() => Math.random() - 0.5).slice(0,10);
                 flatQuestions.push(...randomizedQuestions);
             }
             cache.set(cacheKey, flatQuestions);
