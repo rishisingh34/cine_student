@@ -22,7 +22,7 @@ const feedbackController = {
             await feedbackResponse.save();
             return res.status(200).json({ message: "Feedback recorded" });
         } catch (error) {
-            console.log(error);
+            // console.log(error);
             return res.status(500).json({ message: "Internal server error" });
         }
     }
