@@ -145,6 +145,3 @@ This project is a REST API built using **TypeScript** and **Express.js**. It inc
         - `200 OK`: Feedback submitted
         - `500 Internal Server Error`: Server issues
 
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more information.
