@@ -1,147 +1,189 @@
-# Express TypeScript API with Google reCAPTCHA
 
-This project is a REST API built using **TypeScript** and **Express.js**. It includes authentication with **Google reCAPTCHA** integration, along with several other routes for handling responses, preferences, questions, feedback, and activity tracking.
+# Cine Student API Documentation
 
-## Features
+This document provides a comprehensive overview and documentation for the Cine Student API. This API is responsible for handling student-facing functionality, including authentication, testing, and feedback.
 
-- **User Authentication** with Google reCAPTCHA validation.
-- **Response Handling** for user answers to questions.
-- **Preferences Management** for user programming language preferences.
-- **Caching** of questions using `node-cache` to enhance performance.
-- **Activity Tracking** for user login and test-taking time.
-- **Feedback** system with questions and submission.
+## Table of Contents
 
-## Technologies
-
-- **TypeScript**
-- **Express.js**
-- **MongoDB** with **Mongoose**
-- **Google reCAPTCHA**
-- **Node Cache**
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [API Endpoints](#api-endpoints)
+  - [Student](#student)
+- [Data Models](#data-models)
+  - [Student](#student-model)
+  - [Activity](#activity)
+  - [Question](#question)
+  - [Response](#response)
+  - [Feedback](#feedback)
+  - [Feedback Response](#feedback-response)
 
 ## Installation
 
-1. Clone the repository:
+1. **Clone the repository:**
+   ```bash
+   git clone <repository-url>
+   ```
+2. **Navigate to the project directory:**
+   ```bash
+   cd cine_student
+   ```
+3. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+4. **Start the server:**
+   ```bash
+   npm start
+   ```
 
-    ```bash
-    git clone <repository-url>
-    cd <repository-directory>
+## Configuration
+
+The application's configuration is located in the `config` directory. Key configuration files include:
+
+- `db.config.ts`: Configures the database connection.
+- `env.config.ts`: Manages environment variables.
+- `cors.config.ts`: Configures Cross-Origin Resource Sharing (CORS).
+
+## API Endpoints
+
+### Student
+
+- **POST /student/login**
+  - **Description:** Authenticates a student.
+  - **Request Body:**
+    ```json
+    {
+      "studentNumber": "string",
+      "password": "string"
+    }
     ```
+  - **Response:**
+    - `200 OK`: Login successful.
+    - `400 Bad Request`: Invalid credentials.
+    - `500 Internal Server Error`: Server error.
 
-2. Install dependencies:
-
-    ```bash
-    npm install
+- **POST /student/forgotPassword**
+  - **Description:** Sends a password reset email to the student.
+  - **Request Body:**
+    ```json
+    {
+      "studentNumber": "string"
+    }
     ```
+  - **Response:**
+    - `200 OK`: Password reset email sent.
+    - `400 Bad Request`: Student not found.
+    - `500 Internal Server Error`: Server error.
 
-3. Create a `.env` file with the following values:
-
+- **POST /student/resetPassword**
+  - **Description:** Resets the student's password.
+  - **Request Body:**
+    ```json
+    {
+      "studentNumber": "string",
+      "otp": "string",
+      "password": "string"
+    }
     ```
-    RECAPTCHA_SECRET_KEY=your-secret-key
-    ```
+  - **Response:**
+    - `200 OK`: Password reset successful.
+    - `400 Bad Request`: Invalid OTP or student not found.
+    - `500 Internal Server Error`: Server error.
 
-4. Run the development server:
+- **GET /student/getQuestions**
+  - **Description:** Retrieves all questions, grouped by subject.
+  - **Response:**
+    - `200 OK`: A map of subjects to lists of questions.
+    - `500 Internal Server Error`: Server error.
 
-    ```bash
-    npm run dev
-    ```
-
-## Routes
-
-### Authentication Routes
-
-1. **Login** (`POST /login`)
-    - Request Body:
-        ```json
+- **POST /student/submit**
+  - **Description:** Submits a student's test responses.
+  - **Request Body:**
+    ```json
+    {
+      "studentNumber": "string",
+      "responses": [
         {
-            "studentNumber": "string",
-            "password": "string",
-            "token": "string"  // Google reCAPTCHA token
+          "quesId": "string",
+          "status": "number"
         }
-        ```
-    - Response:
-        - `200 OK`: Login successful
-        - `400 Bad Request`: Invalid credentials or CAPTCHA failure
-        - `500 Internal Server Error`: Server issues
-    
-    - **Note**: Google reCAPTCHA validation is used in this route to verify user authenticity.
+      ]
+    }
+    ```
+  - **Response:**
+    - `200 OK`: Responses submitted successfully.
+    - `400 Bad Request`: Invalid input or student not found.
+    - `500 Internal Server Error`: Server error.
 
-### Test and Response Routes
+- **GET /student/leaderboard**
+  - **Description:** Retrieves the leaderboard.
+  - **Response:**
+    - `200 OK`: A list of students with their scores and ranks.
+    - `500 Internal Server Error`: Server error.
 
-2. **Submit Response** (`POST /response`)
-    - Request Body:
-        ```json
+- **GET /student/getFeedbackQuestions**
+  - **Description:** Retrieves all feedback questions.
+  - **Response:**
+    - `200 OK`: A list of feedback question objects.
+    - `500 Internal Server Error`: Server error.
+
+- **POST /student/submitFeedback**
+  - **Description:** Submits a student's feedback.
+  - **Request Body:**
+    ```json
+    {
+      "studentNumber": "string",
+      "responses": [
         {
-            "userId": "string",
-            "quesId": "string",
-            "status": "string",
-            "ansId": "string"
+          "question": "string",
+          "answer": "string"
         }
-        ```
-    - Response:
-        - `200 OK`: Response recorded or updated
-        - `500 Internal Server Error`: Server issues
+      ]
+    }
+    ```
+  - **Response:**
+    - `200 OK`: Feedback submitted successfully.
+    - `400 Bad Request`: Invalid input or student not found.
+    - `500 Internal Server Error`: Server error.
 
-3. **Set Preferences** (`POST /preferences`)
-    - Request Body:
-        ```json
-        {
-            "userId": "string",
-            "preference": "number"  // 3: C, 4: C++, 5: Python, 6: Java
-        }
-        ```
-    - Response:
-        - `200 OK`: Preference set successfully
-        - `400 Bad Request`: Preference already set
-        - `500 Internal Server Error`: Server issues
+## Data Models
 
-4. **Get Questions** (`GET /questions`)
-    - Query Parameters:
-        - `subject`: Subject of the questions (required)
-        - `userId`: User ID
-    - Response:
-        - `200 OK`: List of questions
-        - `400 Bad Request`: Subject not provided
-        - `500 Internal Server Error`: Server issues
+### Student Model
 
-5. **Get Responses** (`GET /getResponses`)
-    - Query Parameters:
-        - `userId`: User ID (required)
-    - Response:
-        - `200 OK`: User's responses
-        - `500 Internal Server Error`: Server issues
+- `name`: `string` (required)
+- `studentNumber`: `string` (required, unique)
+- `branch`: `string` (required)
+- `gender`: `string` (required)
+- `residency`: `string` (required)
+- `email`: `string` (required, unique)
+- `phone`: `string` (required)
+- `isVerified`: `boolean` (default: `false`)
+- `password`: `string` (required)
 
-6. **Get User Preferences** (`GET /getPreference`)
-    - Query Parameters:
-        - `userId`: User ID (required)
-    - Response:
-        - `200 OK`: User preference (C, C++, Python, Java)
-        - `400 Bad Request`: Invalid preference number
-        - `500 Internal Server Error`: Server issues
+### Activity
 
-7. **Get Remaining Time** (`GET /timeRemaining`)
-    - Query Parameters:
-        - `userId`: User ID (required)
-    - Response:
-        - `200 OK`: Remaining time for the user
-        - `500 Internal Server Error`: Server issues
+- `studentNumber`: `string` (required)
+- `otp`: `string`
+- `createdAt`: `Date` (expires in 10 minutes)
 
-### Feedback Routes
+### Question
 
-8. **Get Feedback Questions** (`GET /feedbackQuestions`)
-    - Response:
-        - `200 OK`: Feedback questions list
-        - `500 Internal Server Error`: Server issues
+- `subject`: `string` (required)
+- `question`: `string` (required)
+- `options`: `[string]` (required)
+- `answer`: `number` (required)
 
-9. **Submit Feedback** (`POST /submitFeedback`)
-    - Request Body:
-        ```json
-        {
-            "userId": "string",
-            "feedback": "string"
-        }
-        ```
-    - Response:
-        - `200 OK`: Feedback submitted
-        - `500 Internal Server Error`: Server issues
+### Response
 
+- `userId`: `mongoose.Schema.Types.ObjectId` (ref: 'Student', required)
+- `quesId`: `mongoose.Schema.Types.ObjectId` (ref: 'Question', required)
+- `status`: `number` (required)
+
+### Feedback
+
+- `question`: `string` (required)
+
+### Feedback Response
+
+- `student`: `mongoose.Schema.Types.ObjectId` (ref: 'Student', required)
+- `responses`: `[{ question: string, answer: string }]`
